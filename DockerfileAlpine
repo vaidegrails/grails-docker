@@ -29,7 +29,7 @@ WORKDIR $HOME
 
 
 ###### Grails installation  ######
-RUN curl -s get.sdkman.io | /bin/sh
+RUN curl -s get.sdkman.io | /bin/bash
 RUN /bin/bash -c "source $HOME/.sdkman/bin/sdkman-init.sh \
 	&& sdk install grails $GRAILS_VERSION"
 
