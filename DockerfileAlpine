@@ -1,0 +1,41 @@
+FROM alpine:3.5
+MAINTAINER Vai de Grails! <contact@vaidegrails.com>
+
+### Default Grails version ###
+ENV GRAILS_VERSION 3.2.8
+ENV GRADLE_VERSION 3.4.1
+
+### Auxilary programs ###
+RUN apk add --no-cache curl \
+	git \
+	nano \
+	zip \
+	unzip && \
+	rm -rf /var/cache/apk/*
+
+RUN apk add --update bash && rm -rf /var/cache/apk/*
+
+### OpenJDK 8 installation ###
+RUN apk add --no-cache openjdk8=8.121.13-r0 &&\
+	rm -rf /var/cache/apk/*
+
+### New user "develop" ###
+RUN adduser -D -h /home/developer developer
+ENV HOME /home/developer
+USER developer
+
+### Workdir definition ###
+WORKDIR $HOME
+
+
+###### Grails installation  ######
+RUN curl -s get.sdkman.io | /bin/sh
+RUN /bin/bash -c "source $HOME/.sdkman/bin/sdkman-init.sh \
+	&& sdk install grails $GRAILS_VERSION"
+
+RUN /bin/bash -c "source $HOME/.sdkman/bin/sdkman-init.sh \
+	&& sdk install gradle 3.4.1"
+
+### Expose port 8080 (embedded Tomcat) and 5005 (debug) ###
+EXPOSE 8080
+EXPOSE 5005
